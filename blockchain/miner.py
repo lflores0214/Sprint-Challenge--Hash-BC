@@ -7,7 +7,7 @@ from uuid import uuid4
 
 from timeit import default_timer as timer
 
-import random
+from random import randint, random
 
 
 def proof_of_work(last_proof):
@@ -21,10 +21,13 @@ def proof_of_work(last_proof):
     """
 
     start = timer()
-
+    
     print("Searching for next proof")
-    proof = 0
+    proof = randint(0,9999)
     #  TODO: Your code here
+    while valid_proof(last_proof, proof) is False:
+        proof += randint(0, 9999)
+    return proof
 
     print("Proof found: " + str(proof) + " in " + str(timer() - start))
     return proof
@@ -40,7 +43,12 @@ def valid_proof(last_hash, proof):
     """
 
     # TODO: Your code here!
-    pass
+    last_proof = f"{last_hash}".encode()
+    last_hash = hashlib.sha256(last_proof).hexdigest()
+
+    guess = f'{proof}'.encode()
+    guess_hash = hashlib.sha256(guess).hexdigest()
+    return guess_hash[:5] == last_hash[-5:]
 
 
 if __name__ == '__main__':
